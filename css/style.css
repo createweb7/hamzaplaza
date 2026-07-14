@@ -577,7 +577,7 @@ h1, h2, h3, h4 {
   }
   .site-header.nav-open .header-actions .btn { width: 100%; }
 
-  .hero { padding: 120px 0 130px; min-height: 0; }
+  .hero { padding: 120px 0 48px; min-height: 0; }
   .hero-scrim {
     background:
       linear-gradient(rgba(6,5,4,0.55), rgba(6,5,4,0.88) 55%, rgba(6,5,4,0.97)),
