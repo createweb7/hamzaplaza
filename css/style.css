@@ -583,7 +583,12 @@ h1, h2, h3, h4 {
       linear-gradient(rgba(6,5,4,0.55), rgba(6,5,4,0.88) 55%, rgba(6,5,4,0.97)),
       linear-gradient(to top, rgba(4,3,2,0.4), transparent 30%);
   }
-  .section { padding: 80px 0; }
+  .section { padding: 48px 0; }
+  .occasions { padding: 56px 0; }
+  .section-lead { margin-bottom: 30px; }
+  .amenities-grid { margin-top: 30px; }
+  .location-grid { margin-top: 26px; }
+  .rooms-cta { margin-top: 32px; }
   .mobile-sticky-bar { display: flex; }
   body { padding-bottom: 78px; }
   .float-whatsapp { bottom: 92px; right: 18px; width: 54px; height: 54px; }
