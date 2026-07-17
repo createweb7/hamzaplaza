@@ -552,12 +552,13 @@ h1, h2, h3, h4 {
 }
 .footer-brand { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
 .footer-brand .brand-mark { height: 44px; }
-.footer-address {
+.footer-email {
   color: var(--text-faint);
-  font-size: 0.88rem;
-  line-height: 1.6;
+  font-size: 0.92rem;
   margin-top: 2px;
+  transition: color 0.25s ease;
 }
+.footer-email:hover { color: var(--gold-light); }
 .footer-col h4 {
   font-family: var(--font-sans);
   font-size: 0.82rem;
