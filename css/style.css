@@ -373,6 +373,21 @@ h1, h2, h3, h4 {
   background: rgba(212,175,55,0.06);
 }
 
+/* ============ Find Us Teaser ============ */
+.find-us-teaser-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  flex-wrap: wrap;
+  padding: 44px 48px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+.find-us-teaser-inner .section-title { margin-bottom: 10px; }
+.find-us-teaser-inner .btn { flex-shrink: 0; }
+
 /* ============ Room Types Page ============ */
 .main-nav a.active { color: var(--gold-light); }
 .main-nav a.active::after { width: 100%; }
@@ -620,10 +635,6 @@ h1, h2, h3, h4 {
 .lightbox-nav:hover { color: var(--gold-light); }
 .lightbox-prev { left: 12px; }
 .lightbox-next { right: 12px; }
-
-/* ============ Reveal animation ============ */
-.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.8s ease, transform 0.8s ease; }
-.reveal.in-view { opacity: 1; transform: translateY(0); }
 
 /* ============ Responsive ============ */
 @media (max-width: 980px) {
