@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Pagination } from "@/components/admin/Pagination";
 import { createClient } from "@/lib/supabase/server";
 
 const STATUS_LABELS: Record<string, string> = {
@@ -9,15 +10,52 @@ const STATUS_LABELS: Record<string, string> = {
   no_show: "No Show",
 };
 
-export default async function BookingsListPage() {
+const PAGE_SIZE = 25;
+const NO_MATCH_ID = "00000000-0000-0000-0000-000000000000";
+
+export default async function BookingsListPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; page?: string }>;
+}) {
+  const { q: rawQ, page: pageParam } = await searchParams;
+  const q = (rawQ ?? "").trim();
+  const page = Math.max(1, Number(pageParam) || 1);
   const supabase = await createClient();
 
-  const { data: bookings } = await supabase
+  let matchingIds: string[] | null = null;
+
+  if (q) {
+    const [byReference, byGuest] = await Promise.all([
+      supabase.from("bookings").select("id").ilike("booking_reference", `%${q}%`),
+      supabase.from("guests").select("id").or(`full_name.ilike.%${q}%,phone.ilike.%${q}%`),
+    ]);
+
+    const guestIds = (byGuest.data ?? []).map((g) => g.id);
+    let byGuestBookings: { id: string }[] = [];
+    if (guestIds.length > 0) {
+      const { data } = await supabase.from("bookings").select("id").in("guest_id", guestIds);
+      byGuestBookings = data ?? [];
+    }
+
+    matchingIds = [...new Set([...(byReference.data ?? []).map((b) => b.id), ...byGuestBookings.map((b) => b.id)])];
+  }
+
+  let query = supabase
     .from("bookings")
     .select(
       "id, booking_reference, check_in_at, check_out_at, status, guests(full_name, phone, id_proof_number), booking_rooms(rooms(room_number)), invoices(grand_total, balance_due, status, payments(payment_method))",
+      { count: "exact" },
     )
     .order("check_in_at", { ascending: false });
+
+  if (matchingIds) {
+    query = query.in("id", matchingIds.length > 0 ? matchingIds : [NO_MATCH_ID]);
+  }
+
+  const from = (page - 1) * PAGE_SIZE;
+  const { data: bookings, count } = await query.range(from, from + PAGE_SIZE - 1);
+  const totalPages = Math.max(1, Math.ceil((count ?? 0) / PAGE_SIZE));
 
   return (
     <div>
@@ -28,7 +66,22 @@ export default async function BookingsListPage() {
         </Link>
       </div>
 
-      <table style={{ width: "100%", borderCollapse: "collapse" }}>
+      <form method="get" style={{ marginBottom: "1rem", display: "flex", gap: "0.5rem", alignItems: "center" }}>
+        <input
+          type="search"
+          name="q"
+          defaultValue={q}
+          placeholder="Search by guest name, phone, or booking reference…"
+          style={{ padding: "0.5rem", width: "320px", maxWidth: "100%" }}
+        />
+        <button type="submit" className="btn">
+          Search
+        </button>
+        {q && <Link href="/admin/bookings">Clear</Link>}
+      </form>
+
+      <div className="admin-table-wrap">
+      <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "760px" }}>
         <thead>
           <tr style={{ textAlign: "left", borderBottom: "1px solid var(--border)" }}>
             <th style={{ padding: "0.5rem" }}>Reference</th>
@@ -87,12 +140,15 @@ export default async function BookingsListPage() {
           {bookings?.length === 0 && (
             <tr>
               <td colSpan={9} style={{ padding: "1rem", color: "var(--text-faint)" }}>
-                No bookings yet.
+                {q ? "No bookings match your search." : "No bookings yet."}
               </td>
             </tr>
           )}
         </tbody>
       </table>
+      </div>
+
+      <Pagination basePath="/admin/bookings" q={q} page={page} totalPages={totalPages} />
     </div>
   );
 }
