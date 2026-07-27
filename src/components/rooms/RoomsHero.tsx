@@ -12,14 +12,15 @@ export function RoomsHero() {
       />
       <div className="page-hero-scrim" aria-hidden="true" />
       <div className="container">
-        <p className="eyebrow">Hamza Residency Plaza</p>
+        <p className="eyebrow">Rooms in Adirampattinam</p>
         <h1>
           Our Room <span className="gold-text">Types</span>
         </h1>
         <p className="page-hero-desc">
-          Five room configurations to suit solo travellers, families and groups — all on a simple daily-rental
-          basis. Every room comes with an attached bathroom, and AC / Non-AC options are available. Rates and
-          live availability are confirmed over a quick call or WhatsApp message.
+          Five room configurations at Hamza Residency Plaza, Adirampattinam, to suit solo travellers, families
+          and groups — all on a simple daily-rental basis. Every room comes with an attached bathroom, and AC /
+          Non-AC options are available. Rates and live availability are confirmed over a quick call or WhatsApp
+          message.
         </p>
         <div className="hero-ctas">
           <a href={`tel:${PRIMARY_PHONE}`} className="btn btn-solid btn-lg">

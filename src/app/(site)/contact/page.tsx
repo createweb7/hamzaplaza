@@ -4,7 +4,8 @@ import { ContactDetails } from "@/components/contact/ContactDetails";
 import { MapEmbed } from "@/components/contact/MapEmbed";
 import { PRIMARY_PHONE, WA_GENERAL_MESSAGE, waLink } from "@/lib/business-info";
 
-const title = "Contact & Location | Hamza Residency Plaza";
+const title = "Contact Us in Adirampattinam";
+const socialTitle = `${title} | Hamza Residency Plaza`;
 const description =
   "Contact Hamza Residency Plaza — call or WhatsApp any of our numbers, or find us on the map. 546/9 ECR Road, Next Bharath Petrol Bunk, Eripurakarai, Adirampattinam PO-614701.";
 
@@ -13,18 +14,18 @@ export const metadata: Metadata = {
   description,
   alternates: { canonical: "/contact" },
   openGraph: {
-    title,
+    title: socialTitle,
     description,
     url: "/contact",
     type: "website",
     locale: "en_IN",
-    images: ["/assets/contact-hero.jpg"],
+    images: [{ url: "/assets/og-contact.jpg", width: 1200, height: 630, alt: socialTitle }],
   },
   twitter: {
     card: "summary_large_image",
-    title,
+    title: socialTitle,
     description,
-    images: ["/assets/contact-hero.jpg"],
+    images: ["/assets/og-contact.jpg"],
   },
 };
 

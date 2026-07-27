@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Hamza Residency Plaza",
     short_name: "Hamza Plaza",
-    description: "Daily-rental AC & Non-AC rooms on ECR Road, Adhirampattinam.",
+    description: "Daily-rental AC & Non-AC rooms in Adirampattinam, on ECR Road.",
     start_url: "/",
     display: "standalone",
     background_color: "#0b0a08",

@@ -20,6 +20,14 @@ export const ADDRESS_LINE_2 = "Eripurakarai, Adirampattinam PO-614701";
 export const ADDRESS_REGION = "Tamil Nadu, India";
 export const FULL_ADDRESS = `${ADDRESS_LINE_1}, ${ADDRESS_LINE_2}, ${ADDRESS_REGION}`;
 
+// Split out for structured data (schema.org PostalAddress wants these as
+// separate fields, not folded into one streetAddress string).
+export const ADDRESS_STREET = `${ADDRESS_LINE_1}, Eripurakarai`;
+export const ADDRESS_LOCALITY = "Adirampattinam";
+export const ADDRESS_POSTAL_CODE = "614701";
+export const ADDRESS_REGION_SHORT = "Tamil Nadu";
+export const ADDRESS_COUNTRY = "IN";
+
 export const GEO = { latitude: 10.33436107635498, longitude: 79.3762435913086 };
 export const MAP_ZOOM = 17;
 export const MAP_EMBED_URL = `https://www.google.com/maps?q=${GEO.latitude},${GEO.longitude}&z=${MAP_ZOOM}&output=embed`;

@@ -5,27 +5,31 @@ import { PhotoGallery } from "@/components/home/PhotoGallery";
 import { OccasionsSection } from "@/components/home/OccasionsSection";
 import { FindUsTeaser } from "@/components/home/FindUsTeaser";
 
-const title = "Hamza Residency Plaza | ECR Road, Adhirampattinam";
+const title = "Rooms in Adirampattinam, ECR Road";
+// og:title/twitter:title aren't run through the root layout's title template
+// (that only applies to the <title> tag), so they need the brand name spelled
+// out explicitly to match what the <title> tag ends up as.
+const socialTitle = `${title} | Hamza Residency Plaza`;
 const description =
-  "Hamza Residency Plaza – premium daily-rental AC & Non-AC rooms on ECR Road, Adhirampattinam. Perfect for weddings, family functions & outstation stays. Call or WhatsApp to book.";
+  "Hamza Residency Plaza – premium daily-rental AC & Non-AC rooms in Adirampattinam, on ECR Road. Perfect for weddings, family functions & outstation stays. Call or WhatsApp to book.";
 
 export const metadata: Metadata = {
   title,
   description,
   alternates: { canonical: "/" },
   openGraph: {
-    title,
+    title: socialTitle,
     description,
     url: "/",
     type: "website",
     locale: "en_IN",
-    images: ["/assets/hero-frontage-day.jpg"],
+    images: [{ url: "/assets/og-home.jpg", width: 1200, height: 630, alt: socialTitle }],
   },
   twitter: {
     card: "summary_large_image",
-    title,
+    title: socialTitle,
     description,
-    images: ["/assets/hero-frontage-day.jpg"],
+    images: ["/assets/og-home.jpg"],
   },
 };
 

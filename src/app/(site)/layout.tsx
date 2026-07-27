@@ -1,3 +1,4 @@
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
@@ -11,6 +12,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
       <Footer />
       <FloatingWhatsApp />
       <MobileStickyBar />
+      <GoogleAnalytics gaId="G-81F89VBCXF" />
     </>
   );
 }

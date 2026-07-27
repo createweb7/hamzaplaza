@@ -13,7 +13,7 @@ export function Hero() {
 
       <div className="container hero-inner">
         <div className="hero-copy">
-          <p className="eyebrow">ECR Road &middot; Adhirampattinam</p>
+          <p className="eyebrow">Rooms in Adirampattinam &middot; ECR Road</p>
           <h1>
             Hamza Residency
             <br />
