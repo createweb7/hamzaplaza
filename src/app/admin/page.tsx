@@ -145,7 +145,8 @@ export default async function AdminDashboardPage() {
 
       <section style={{ marginTop: "2rem" }}>
         <h3>Monthly summary</h3>
-        <table style={{ width: "100%", borderCollapse: "collapse", maxWidth: "560px" }}>
+        <div className="admin-table-wrap">
+        <table style={{ width: "100%", borderCollapse: "collapse", maxWidth: "560px", minWidth: "480px" }}>
           <thead>
             <tr style={{ textAlign: "left", borderBottom: "1px solid var(--border)" }}>
               <th style={{ padding: "0.5rem" }}>Month</th>
@@ -172,11 +173,13 @@ export default async function AdminDashboardPage() {
             )}
           </tbody>
         </table>
+        </div>
       </section>
 
       <section style={{ marginTop: "2rem" }}>
         <h3>Next 7 days</h3>
-        <table style={{ width: "100%", borderCollapse: "collapse", maxWidth: "720px" }}>
+        <div className="admin-table-wrap">
+        <table style={{ width: "100%", borderCollapse: "collapse", maxWidth: "720px", minWidth: "560px" }}>
           <thead>
             <tr style={{ textAlign: "left", borderBottom: "1px solid var(--border)" }}>
               <th style={{ padding: "0.5rem" }}>Reference</th>
@@ -207,6 +210,7 @@ export default async function AdminDashboardPage() {
             )}
           </tbody>
         </table>
+        </div>
       </section>
     </div>
   );
