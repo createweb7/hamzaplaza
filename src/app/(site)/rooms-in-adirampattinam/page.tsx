@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { LandingHero } from "@/components/landing/LandingHero";
 import { HighlightStrip } from "@/components/landing/HighlightStrip";
 import { ProseSection } from "@/components/landing/ProseSection";
@@ -262,6 +263,17 @@ export default function RoomsInAdirampattinamPage() {
         paragraphs={[
           "When searching online for Adirampattinam rooms, guests look for more than just a place to stay — they want comfort, convenience, and dependable service. Hamza Residency Plaza delivers all of this with clean hotel rooms, modern amenities, and a welcoming atmosphere.",
           "Whether you're visiting Adirampattinam for business, a family event, or a relaxing getaway, our hotel is ready to make your stay comfortable from the moment you arrive.",
+          <>
+            Looking for something specific? Visit our{" "}
+            <Link className="prose-link" href="/hotel-in-adirampattinam">
+              Adirampattinam Hotel
+            </Link>{" "}
+            page for our full range of hospitality, or our{" "}
+            <Link className="prose-link" href="/lodge-in-adirampattinam">
+              Adirampattinam Lodge
+            </Link>{" "}
+            page for budget-friendly options.
+          </>,
         ]}
         image="/assets/hero-frontage-day.jpg"
         imageAlt="Hamza Residency Plaza hotel exterior in Adirampattinam"
