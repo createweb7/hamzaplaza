@@ -164,7 +164,7 @@ export default function LodgeInAdirampattinamPage() {
         eyebrow="Hamza Residency Plaza"
         title="Adirampattinam Lodge – Affordable Accommodation with Modern Comfort"
         description="Clean, affordable AC lodge accommodation in Adirampattinam for overnight travellers, families, and business visitors. Call or WhatsApp to check availability."
-        backgroundImage="/assets/rooms/room-ac-3.jpg"
+        backgroundImage="/assets/rooms/room-deluxe-2.jpg"
         waMessage={WA_MESSAGE}
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Adirampattinam Lodge" }]}
       />
