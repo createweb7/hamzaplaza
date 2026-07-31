@@ -33,3 +33,21 @@ export function addDays(dateKey: string, days: number): string {
 export function istNowDateKey(): string {
   return istDateKey(new Date().toISOString());
 }
+
+// Adds `months` calendar months to a "YYYY-MM" month key.
+export function addMonths(monthKey: string, months: number): string {
+  const [y, m] = monthKey.split("-").map(Number);
+  const total = y * 12 + (m - 1) + months;
+  const newYear = Math.floor(total / 12);
+  const newMonth = (total % 12) + 1;
+  return `${newYear}-${String(newMonth).padStart(2, "0")}`;
+}
+
+// IST instant bounds for a "YYYY-MM" month key: [start, end) — end is the
+// first instant of the following month, for use with a `.lt()` filter.
+export function monthBoundsIst(monthKey: string) {
+  return {
+    start: `${monthKey}-01T00:00:00+05:30`,
+    end: `${addMonths(monthKey, 1)}-01T00:00:00+05:30`,
+  };
+}

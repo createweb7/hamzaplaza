@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { BookingsChart } from "@/components/admin/BookingsChart";
 import { createClient } from "@/lib/supabase/server";
-import { istDateKey, istMonthKey } from "@/lib/dates";
+import { addMonths, istDateKey, istMonthKey, monthBoundsIst } from "@/lib/dates";
 
 function monthLabel(monthKey: string) {
   const [year, month] = monthKey.split("-").map(Number);
@@ -16,7 +16,12 @@ function revenueOf(row: BookingRow) {
 
 const currency = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
 
-export default async function AdminDashboardPage() {
+export default async function AdminDashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ month?: string }>;
+}) {
+  const { month: monthParam } = await searchParams;
   const supabase = await createClient();
   const {
     data: { user },
@@ -68,11 +73,23 @@ export default async function AdminDashboardPage() {
   const weekRevenue = thisWeekBookings.reduce((sum, b) => sum + revenueOf(b), 0);
 
   const currentMonthKey = istMonthKey(now.toISOString());
-  const thisMonthBookings = bookings.filter((b) => istMonthKey(b.check_in_at) === currentMonthKey);
-  const monthRevenue = thisMonthBookings.reduce((sum, b) => sum + revenueOf(b), 0);
+  const selectedMonthKey = monthParam && /^\d{4}-\d{2}$/.test(monthParam) ? monthParam : currentMonthKey;
+  const isCurrentMonth = selectedMonthKey === currentMonthKey;
+
+  const { start: selectedMonthStart, end: selectedMonthEnd } = monthBoundsIst(selectedMonthKey);
+  const { data: selectedMonthData } = await supabase
+    .from("bookings")
+    .select("id, check_in_at, invoices(grand_total)")
+    .gte("check_in_at", selectedMonthStart)
+    .lt("check_in_at", selectedMonthEnd)
+    .not("status", "in", "(cancelled,no_show)")
+    .order("check_in_at");
+
+  const selectedMonthBookings = (selectedMonthData ?? []) as BookingRow[];
+  const monthRevenue = selectedMonthBookings.reduce((sum, b) => sum + revenueOf(b), 0);
 
   const dailyMap = new Map<string, { bookings: number; revenue: number }>();
-  for (const b of thisMonthBookings) {
+  for (const b of selectedMonthBookings) {
     const key = istDateKey(b.check_in_at);
     const entry = dailyMap.get(key) ?? { bookings: 0, revenue: 0 };
     entry.bookings += 1;
@@ -82,6 +99,9 @@ export default async function AdminDashboardPage() {
   const dailySeries = [...dailyMap.entries()]
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([date, v]) => ({ date: date.slice(8), bookings: v.bookings, revenue: v.revenue }));
+
+  const prevMonthKey = addMonths(selectedMonthKey, -1);
+  const nextMonthKey = addMonths(selectedMonthKey, 1);
 
   const monthlyMap = new Map<string, { bookings: number; revenue: number }>();
   for (const b of bookings) {
@@ -106,18 +126,35 @@ export default async function AdminDashboardPage() {
           <div style={{ color: "var(--text-dim)" }}>{currency.format(weekRevenue)}</div>
         </div>
         <div style={{ border: "1px solid var(--border)", borderRadius: "10px", padding: "1rem", minWidth: "200px" }}>
-          <div style={{ color: "var(--text-faint)", fontSize: "0.85rem" }}>{monthLabel(currentMonthKey)}</div>
-          <div style={{ fontSize: "1.5rem", fontWeight: 600 }}>{thisMonthBookings.length} bookings</div>
+          <div style={{ color: "var(--text-faint)", fontSize: "0.85rem" }}>{monthLabel(selectedMonthKey)}</div>
+          <div style={{ fontSize: "1.5rem", fontWeight: 600 }}>{selectedMonthBookings.length} bookings</div>
           <div style={{ color: "var(--text-dim)" }}>{currency.format(monthRevenue)}</div>
         </div>
       </section>
 
       <section style={{ marginTop: "2rem" }}>
-        <h3>{monthLabel(currentMonthKey)} — daily bookings &amp; revenue</h3>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.75rem" }}>
+          <h3 style={{ margin: 0 }}>{monthLabel(selectedMonthKey)} — daily bookings &amp; revenue</h3>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+            <Link href={`/admin?month=${prevMonthKey}`} className="btn btn-ghost">
+              &larr; {monthLabel(prevMonthKey)}
+            </Link>
+            {!isCurrentMonth && (
+              <Link href="/admin" className="btn btn-ghost">
+                This month
+              </Link>
+            )}
+            <Link href={`/admin?month=${nextMonthKey}`} className="btn btn-ghost">
+              {monthLabel(nextMonthKey)}
+              {" "}
+              &rarr;
+            </Link>
+          </div>
+        </div>
         {dailySeries.length > 0 ? (
           <BookingsChart data={dailySeries} />
         ) : (
-          <p style={{ color: "var(--text-faint)" }}>No bookings yet this month.</p>
+          <p style={{ color: "var(--text-faint)" }}>No bookings that month.</p>
         )}
       </section>
 
@@ -136,7 +173,9 @@ export default async function AdminDashboardPage() {
           <tbody>
             {monthlyRows.map((row) => (
               <tr key={row.month} style={{ borderBottom: "1px solid var(--border)" }}>
-                <td style={{ padding: "0.5rem" }}>{monthLabel(row.month)}</td>
+                <td style={{ padding: "0.5rem" }}>
+                  <Link href={`/admin?month=${row.month}`}>{monthLabel(row.month)}</Link>
+                </td>
                 <td style={{ padding: "0.5rem" }}>{row.bookings}</td>
                 <td style={{ padding: "0.5rem" }}>{currency.format(row.revenue)}</td>
                 <td style={{ padding: "0.5rem" }}>{currency.format(row.avg)}</td>

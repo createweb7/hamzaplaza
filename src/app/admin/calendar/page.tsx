@@ -104,7 +104,9 @@ export default async function AdminCalendarPage({
             Today
           </Link>
           <Link href={`/admin/calendar?start=${nextStart}`} className="btn btn-ghost">
-            Next {WINDOW_DAYS} &rarr;
+            Next {WINDOW_DAYS}
+            {" "}
+            &rarr;
           </Link>
           <form method="get" style={{ display: "flex", gap: "0.4rem", alignItems: "center" }}>
             <input type="date" name="start" defaultValue={startKey} style={{ padding: "0.4rem" }} />
