@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 
 const NAV_ITEMS = [
   { href: "/admin", label: "Dashboard", available: true },
+  { href: "/admin/calendar", label: "Calendar", available: true },
   { href: "/admin/bookings", label: "Bookings", available: true },
   { href: "/admin/invoices", label: "Invoices", available: true },
   { href: "/admin/rooms-admin", label: "Rooms", available: true },

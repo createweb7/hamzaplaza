@@ -1,29 +1,7 @@
 import Link from "next/link";
 import { BookingsChart } from "@/components/admin/BookingsChart";
 import { createClient } from "@/lib/supabase/server";
-
-const IST_TZ = "Asia/Kolkata";
-
-function istParts(iso: string) {
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone: IST_TZ,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).formatToParts(new Date(iso));
-  const map = Object.fromEntries(parts.map((p) => [p.type, p.value]));
-  return { year: map.year, month: map.month, day: map.day };
-}
-
-function istDateKey(iso: string) {
-  const { year, month, day } = istParts(iso);
-  return `${year}-${month}-${day}`;
-}
-
-function istMonthKey(iso: string) {
-  const { year, month } = istParts(iso);
-  return `${year}-${month}`;
-}
+import { istDateKey, istMonthKey } from "@/lib/dates";
 
 function monthLabel(monthKey: string) {
   const [year, month] = monthKey.split("-").map(Number);

@@ -1023,6 +1023,41 @@ h1, h2, h3, h4 {
   overflow-x: auto;
 }
 
+.calendar-table { width: 100%; table-layout: fixed; }
+.calendar-cell { border: 1px solid var(--border); padding: 0.4rem; text-align: center; font-size: 0.85rem; }
+.calendar-room-header {
+  text-align: left;
+  font-weight: 600;
+  background: var(--surface);
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  width: 90px;
+}
+.calendar-date-header { color: var(--text-dim); background: var(--surface); }
+.calendar-date-header div:first-child { font-size: 0.72rem; color: var(--text-faint); text-transform: uppercase; }
+.calendar-today { background: rgba(212, 175, 55, 0.16); color: var(--text); font-weight: 600; }
+.calendar-past { opacity: 0.55; }
+.calendar-free { background: var(--surface); }
+.calendar-booked-cell { padding: 0; background: var(--surface); }
+.calendar-booked-bar {
+  display: block;
+  height: 100%;
+  padding: 0.4rem 0.5rem;
+  background: rgba(59, 130, 246, 0.22);
+  color: var(--text);
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background 0.2s ease;
+}
+.calendar-booked-bar:hover { background: rgba(59, 130, 246, 0.38); }
+.calendar-swatch { display: inline-block; width: 14px; height: 14px; border-radius: 3px; border: 1px solid var(--border); }
+.calendar-swatch-booked { background: rgba(59, 130, 246, 0.38); }
+.calendar-swatch-free { background: var(--surface); }
+.calendar-swatch-past { background: var(--surface); opacity: 0.55; }
+
 .admin-nav-toggle {
   display: none;
   flex-direction: column;
