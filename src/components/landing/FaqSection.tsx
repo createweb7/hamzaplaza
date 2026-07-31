@@ -13,13 +13,13 @@ export function FaqSection({ items }: { items: FaqItem[] }) {
 
   return (
     <section className="section">
-      <div className="container">
+      <div className="container faq-container">
         <p className="section-eyebrow">Questions</p>
         <h2 className="section-title">Frequently Asked Questions</h2>
 
         <div className="faq-list">
-          {items.map((item) => (
-            <details className="faq-item" key={item.question}>
+          {items.map((item, index) => (
+            <details className="faq-item" key={item.question} open={index === 0}>
               <summary>{item.question}</summary>
               <p>{item.answer}</p>
             </details>
