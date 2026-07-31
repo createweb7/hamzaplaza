@@ -276,7 +276,11 @@ export default function RoomsInAdirampattinamPage() {
             <Link className="prose-link" href="/family-rooms-in-adirampattinam">
               Family Rooms
             </Link>{" "}
-            page if you're travelling with relatives.
+            page if you're travelling with relatives, or our{" "}
+            <Link className="prose-link" href="/ac-rooms-in-adirampattinam">
+              AC Rooms
+            </Link>{" "}
+            page for air-conditioned accommodation.
           </>,
         ]}
         image="/assets/hero-frontage-day.jpg"

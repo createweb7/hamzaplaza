@@ -249,6 +249,10 @@ export default function FamilyRoomsInAdirampattinamPage() {
             <Link className="prose-link" href="/hotel-in-adirampattinam">
               Adirampattinam Hotel
             </Link>{" "}
+            page, our{" "}
+            <Link className="prose-link" href="/ac-rooms-in-adirampattinam">
+              AC Rooms
+            </Link>{" "}
             page, our budget-friendly{" "}
             <Link className="prose-link" href="/lodge-in-adirampattinam">
               Adirampattinam Lodge

@@ -270,7 +270,11 @@ export default function LodgeInAdirampattinamPage() {
             <Link className="prose-link" href="/family-rooms-in-adirampattinam">
               Family Rooms
             </Link>{" "}
-            page if you're travelling with relatives, or browse the{" "}
+            page if you're travelling with relatives, our{" "}
+            <Link className="prose-link" href="/ac-rooms-in-adirampattinam">
+              AC Rooms
+            </Link>{" "}
+            page for air-conditioned accommodation, or browse the{" "}
             <Link className="prose-link" href="/rooms">
               complete room types
             </Link>{" "}
