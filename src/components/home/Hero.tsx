@@ -13,11 +13,9 @@ export function Hero() {
 
       <div className="container hero-inner">
         <div className="hero-copy">
-          <p className="eyebrow">Rooms in Adirampattinam &middot; ECR Road</p>
+          <p className="eyebrow">Hamza Residency Plaza &middot; ECR Road</p>
           <h1>
-            Hamza Residency
-            <br />
-            <span className="gold-text">Plaza</span>
+            Rooms in <span className="gold-text">Adirampattinam</span>
           </h1>
           <p className="hero-tamil">ஹாம்சா ரெசிடென்சி பிளாசா — அனைத்து நவீன வசதிகளுடன்</p>
           <p className="hero-desc">

@@ -5,13 +5,13 @@ import { PhotoGallery } from "@/components/home/PhotoGallery";
 import { OccasionsSection } from "@/components/home/OccasionsSection";
 import { FindUsTeaser } from "@/components/home/FindUsTeaser";
 
-const title = "Rooms in Adirampattinam, ECR Road";
+const title = "Rooms in Adirampattinam | Best Hotel";
 // og:title/twitter:title aren't run through the root layout's title template
 // (that only applies to the <title> tag), so they need the brand name spelled
 // out explicitly to match what the <title> tag ends up as.
 const socialTitle = `${title} | Hamza Residency Plaza`;
 const description =
-  "Hamza Residency Plaza – premium daily-rental AC & Non-AC rooms in Adirampattinam, on ECR Road. Perfect for weddings, family functions & outstation stays. Call or WhatsApp to book.";
+  "Looking for rooms in Adirampattinam? Hamza Residency Plaza offers clean AC & Non-AC rooms, free WiFi and secure parking for an affordable stay. Call or WhatsApp to book.";
 
 export const metadata: Metadata = {
   title,
