@@ -1,5 +1,6 @@
 import { PhoneIcon, WhatsAppIcon } from "@/components/icons";
 import { PRIMARY_PHONE, waLink } from "@/lib/business-info";
+import { Breadcrumbs } from "@/components/landing/Breadcrumbs";
 
 export function LandingHero({
   eyebrow,
@@ -7,12 +8,14 @@ export function LandingHero({
   description,
   backgroundImage,
   waMessage,
+  breadcrumbs,
 }: {
   eyebrow: string;
   title: string;
   description: string;
   backgroundImage: string;
   waMessage: string;
+  breadcrumbs?: { label: string; href?: string }[];
 }) {
   return (
     <section className="page-hero">
@@ -23,6 +26,7 @@ export function LandingHero({
       />
       <div className="page-hero-scrim" aria-hidden="true" />
       <div className="container">
+        {breadcrumbs && <Breadcrumbs items={breadcrumbs} />}
         <p className="eyebrow">{eyebrow}</p>
         <h1>{title}</h1>
         <p className="page-hero-desc">{description}</p>
