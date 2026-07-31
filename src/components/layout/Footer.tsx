@@ -14,6 +14,11 @@ export function Footer() {
           <a href={`mailto:${EMAIL}`} className="footer-email">
             {EMAIL}
           </a>
+          <p className="footer-address">
+            {ADDRESS_LINE_1}
+            <br />
+            {ADDRESS_LINE_2}
+          </p>
         </div>
 
         <div className="footer-col">
@@ -29,25 +34,18 @@ export function Footer() {
         </div>
 
         <div className="footer-col">
-          <h4>Address</h4>
-          <p>
-            {ADDRESS_LINE_1}
-            <br />
-            {ADDRESS_LINE_2}
-          </p>
-        </div>
-
-        <div className="footer-col">
           <h4>Explore</h4>
-          <Link href="/">Home</Link>
-          <Link href="/rooms">Rooms</Link>
-          <Link href="/contact">Contact</Link>
-          <Link href="/rooms-in-adirampattinam">Adirampattinam Rooms</Link>
-          <Link href="/hotel-in-adirampattinam">Adirampattinam Hotel</Link>
-          <Link href="/lodge-in-adirampattinam">Adirampattinam Lodge</Link>
-          <Link href="/family-rooms-in-adirampattinam">Family Rooms</Link>
-          <Link href="/ac-rooms-in-adirampattinam">AC Rooms</Link>
-          <Link href="/budget-hotel-in-adirampattinam">Budget Hotel</Link>
+          <div className="footer-explore-grid">
+            <Link href="/">Home</Link>
+            <Link href="/rooms">Rooms</Link>
+            <Link href="/contact">Contact</Link>
+            <Link href="/rooms-in-adirampattinam">Adirampattinam Rooms</Link>
+            <Link href="/hotel-in-adirampattinam">Adirampattinam Hotel</Link>
+            <Link href="/lodge-in-adirampattinam">Adirampattinam Lodge</Link>
+            <Link href="/family-rooms-in-adirampattinam">Family Rooms</Link>
+            <Link href="/ac-rooms-in-adirampattinam">AC Rooms</Link>
+            <Link href="/budget-hotel-in-adirampattinam">Budget Hotel</Link>
+          </div>
         </div>
       </div>
       <div className="footer-bottom">

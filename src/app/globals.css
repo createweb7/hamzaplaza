@@ -631,7 +631,7 @@ h1, h2, h3, h4 {
 }
 .footer-inner {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  grid-template-columns: 1.3fr 0.9fr 1.5fr;
   gap: 40px;
   padding-bottom: 50px;
   border-bottom: 1px solid rgba(255,255,255,0.06);
@@ -645,6 +645,7 @@ h1, h2, h3, h4 {
   transition: color 0.25s ease;
 }
 .footer-email:hover { color: var(--gold-light); }
+.footer-address { color: var(--text-faint); font-size: 0.92rem; margin-top: 4px; }
 .footer-col h4 {
   font-family: var(--font-sans);
   font-size: 0.82rem;
@@ -657,6 +658,7 @@ h1, h2, h3, h4 {
 .footer-col { display: flex; flex-direction: column; gap: 11px; }
 .footer-col a, .footer-col p { color: var(--text-faint); font-size: 0.92rem; }
 .footer-col a:hover { color: var(--gold-light); }
+.footer-explore-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 11px 20px; }
 .footer-bottom {
   text-align: center;
   padding: 26px 0;
@@ -743,6 +745,7 @@ h1, h2, h3, h4 {
   .gallery > .gallery-item:nth-child(1), .gallery > .gallery-item:nth-child(4) { grid-row: span 2; }
   .location-grid { grid-template-columns: 1fr; }
   .footer-inner { grid-template-columns: 1fr 1fr; }
+  .footer-inner .footer-col:last-child { grid-column: 1 / -1; }
   .room-type-grid { grid-template-columns: 1fr; gap: 36px; }
   .room-type-grid.reverse .room-type-gallery,
   .room-type-grid.reverse .room-type-info { order: initial; }
@@ -814,6 +817,7 @@ h1, h2, h3, h4 {
   .amenities-grid { grid-template-columns: 1fr; }
   .gallery { grid-template-columns: 1fr 1fr; grid-auto-rows: 180px; }
   .footer-inner { grid-template-columns: 1fr; }
+  .footer-explore-grid { grid-template-columns: 1fr; }
 }
 
 /* ============ Landing Pages ============ */
