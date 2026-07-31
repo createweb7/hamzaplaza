@@ -32,7 +32,7 @@ const DEFAULT_DESCRIPTION =
   "Hamza Residency Plaza – premium daily-rental AC & Non-AC rooms in Adirampattinam, on ECR Road. Perfect for weddings, family functions & outstation stays. Call or WhatsApp to book.";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://hamzaplaza.com"),
+  metadataBase: new URL("https://www.hamzaplaza.com"),
   title: {
     default: SITE_NAME,
     template: `%s | ${SITE_NAME}`,
@@ -78,8 +78,8 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "LodgingBusiness",
   name: SITE_NAME,
-  url: "https://hamzaplaza.com",
-  image: "https://hamzaplaza.com/assets/frontage-day-card.jpg",
+  url: "https://www.hamzaplaza.com",
+  image: "https://www.hamzaplaza.com/assets/frontage-day-card.jpg",
   telephone: PRIMARY_PHONE_DISPLAY,
   email: EMAIL,
   address: {

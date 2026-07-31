@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: "/admin",
     },
-    sitemap: "https://hamzaplaza.com/sitemap.xml",
+    sitemap: "https://www.hamzaplaza.com/sitemap.xml",
   };
 }
