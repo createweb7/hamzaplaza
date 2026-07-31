@@ -105,7 +105,7 @@ const WA_MESSAGE = "Assalamu Alaikum, I'd like to know more about room availabil
 
 export default function RoomsInAdirampattinamPage() {
   return (
-    <>
+    <div className="landing-page">
       <LandingHero
         eyebrow="Adirampattinam Rooms"
         title="Adirampattinam Rooms – Comfortable Hotel Rooms at Hamza Residency Plaza"
@@ -121,16 +121,21 @@ export default function RoomsInAdirampattinamPage() {
           "Whether you need a peaceful overnight stay or comfortable accommodation for several days, Hamza Residency Plaza provides well-maintained hotel rooms with modern amenities to ensure a relaxing experience. From the moment you arrive until your departure, our team is committed to making your stay enjoyable with friendly hospitality and quality service.",
           "For guests looking for Adirampattinam room booking, we make the process simple and convenient, helping you reserve the right room for your visit.",
         ]}
+        image="/assets/frontage-day-card.jpg"
+        imageAlt="Hamza Residency Plaza building frontage in Adirampattinam"
       />
 
       <ProseSection
         alt
+        reverse
         title="Comfortable Hotel Rooms Designed for Every Traveller"
         paragraphs={[
           "Every guest has different travel needs, and Hamza Residency Plaza offers accommodation that suits a variety of visitors. Whether you're travelling alone, with your family, or on a business trip, our rooms provide the comfort and convenience you expect from a quality hotel.",
           "Our Adirampattinam hotel rooms are thoughtfully designed with spacious interiors, comfortable bedding, clean bathrooms, and modern facilities that help you relax after a busy day. We focus on maintaining a peaceful environment so every guest enjoys a restful stay.",
           "Whether you're attending a family celebration, exploring nearby attractions, or visiting for work, you'll find the perfect accommodation at Hamza Residency Plaza.",
         ]}
+        image="/assets/rooms/room-ac-1.jpg"
+        imageAlt="Spacious air-conditioned hotel room at Hamza Residency Plaza"
       />
 
       <ChecklistSection
@@ -148,14 +153,19 @@ export default function RoomsInAdirampattinamPage() {
           "Our family-friendly rooms provide ample space for parents and children, allowing everyone to enjoy a relaxing stay. The peaceful atmosphere, helpful staff, and convenient location make Hamza Residency Plaza a preferred destination for family accommodation in Adirampattinam.",
           "If you're planning a family visit, our Adirampattinam room booking service ensures you can reserve your accommodation in advance for a hassle-free arrival.",
         ]}
+        image="/assets/rooms/deluxe-suite.jpg"
+        imageAlt="Spacious deluxe suite for families at Hamza Residency Plaza"
       />
 
       <ProseSection
+        reverse
         title="Perfect for Business Travellers"
         paragraphs={[
           "Business visitors require accommodation that offers convenience, comfort, and reliable facilities. Hamza Residency Plaza provides a peaceful environment where professionals can relax after meetings or continue working comfortably with access to complimentary Wi-Fi.",
           "Our location allows easy access to commercial areas and nearby towns, making us a convenient choice for corporate travellers. After a productive day, guests can unwind in clean and comfortable surroundings before continuing their journey.",
         ]}
+        image="/assets/rooms/lounge.jpg"
+        imageAlt="Comfortable lounge seating area at Hamza Residency Plaza"
       />
 
       <ChipSection
@@ -175,11 +185,14 @@ export default function RoomsInAdirampattinamPage() {
 
       <ProseSection
         alt
+        reverse
         title="Cleanliness & Guest Comfort"
         paragraphs={[
           "Cleanliness is one of the most important aspects of a pleasant hotel stay. Our housekeeping team carefully prepares every room before guest arrival, ensuring fresh linens, sanitised bathrooms, and spotless interiors.",
           "Regular cleaning and maintenance help create a hygienic environment where guests can relax with confidence. At Hamza Residency Plaza, we are committed to maintaining high standards of cleanliness throughout the property.",
         ]}
+        image="/assets/rooms/bathroom.jpg"
+        imageAlt="Clean attached bathroom at Hamza Residency Plaza"
       />
 
       <CtaBanner
@@ -195,14 +208,19 @@ export default function RoomsInAdirampattinamPage() {
           "Quality accommodation doesn't have to be expensive. Hamza Residency Plaza offers affordable hotel rooms that provide excellent value for money while maintaining high standards of comfort and service.",
           "Whether you're staying for a single night, a weekend, or a longer visit, you'll enjoy reliable hospitality and comfortable accommodation at competitive rates.",
         ]}
+        image="/assets/rooms/room-ac-3.jpg"
+        imageAlt="Affordable air-conditioned hotel room at Hamza Residency Plaza"
       />
 
       <ProseSection
+        reverse
         title="Experience the Best Stay in Adirampattinam"
         paragraphs={[
           "When searching online for Adirampattinam rooms, guests look for more than just a place to stay — they want comfort, convenience, and dependable service. Hamza Residency Plaza delivers all of this with clean hotel rooms, modern amenities, and a welcoming atmosphere.",
           "Whether you're visiting Adirampattinam for business, a family event, or a relaxing getaway, our hotel is ready to make your stay comfortable from the moment you arrive.",
         ]}
+        image="/assets/hero-frontage-day.jpg"
+        imageAlt="Hamza Residency Plaza hotel exterior in Adirampattinam"
       />
 
       <ClosingCta
@@ -212,6 +230,6 @@ export default function RoomsInAdirampattinamPage() {
       />
 
       <FaqSection items={FAQ_ITEMS} />
-    </>
+    </div>
   );
 }

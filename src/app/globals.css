@@ -739,7 +739,6 @@ h1, h2, h3, h4 {
 /* ============ Responsive ============ */
 @media (max-width: 980px) {
   .amenities-grid { grid-template-columns: repeat(2, 1fr); }
-  .checklist-grid { grid-template-columns: repeat(2, 1fr); }
   .gallery { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 220px; }
   .gallery > .gallery-item:nth-child(1), .gallery > .gallery-item:nth-child(4) { grid-row: span 2; }
   .location-grid { grid-template-columns: 1fr; }
@@ -813,12 +812,32 @@ h1, h2, h3, h4 {
 
 @media (max-width: 560px) {
   .amenities-grid { grid-template-columns: 1fr; }
-  .checklist-grid { grid-template-columns: 1fr; }
   .gallery { grid-template-columns: 1fr 1fr; grid-auto-rows: 180px; }
   .footer-inner { grid-template-columns: 1fr; }
 }
 
 /* ============ Landing Pages ============ */
+/* Scoped down from the shared 110px .section rhythm (tuned for the
+   homepage's handful of sections) — a dense landing page with a dozen+
+   stacked sections reads as huge empty gaps at that spacing. */
+.landing-page .section { padding: 72px 0; }
+.landing-page .rooms-closing { padding: 64px 0; }
+
+.landing-split {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 60px;
+  align-items: center;
+}
+.landing-split.reverse .landing-split-media { order: -1; }
+.landing-split-media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
 .checklist-grid {
   margin-top: 36px;
   display: grid;
@@ -1013,4 +1032,23 @@ h1, h2, h3, h4 {
 @media (max-width: 520px) {
   .admin-topbar-right { gap: 0.5rem; }
   .admin-user-label { display: none; }
+}
+
+/* ============ Landing Pages — responsive ============ */
+/* Placed at the end of the file deliberately: these override earlier
+   unscoped .checklist-grid/.landing-split base rules, and an equal-
+   specificity override only wins if it's later in source order than
+   the rule it's overriding, regardless of the @media wrapping. */
+@media (max-width: 980px) {
+  .checklist-grid { grid-template-columns: repeat(2, 1fr); }
+  .landing-split { grid-template-columns: 1fr; gap: 32px; }
+  .landing-split.reverse .landing-split-media { order: initial; }
+  .landing-page .section { padding: 52px 0; }
+  .landing-page .rooms-closing { padding: 48px 0; }
+}
+
+@media (max-width: 560px) {
+  .checklist-grid { grid-template-columns: 1fr; }
+  .landing-page .section { padding: 40px 0; }
+  .landing-page .rooms-closing { padding: 40px 0; }
 }
