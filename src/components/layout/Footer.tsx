@@ -47,6 +47,7 @@ export function Footer() {
           <Link href="/lodge-in-adirampattinam">Adirampattinam Lodge</Link>
           <Link href="/family-rooms-in-adirampattinam">Family Rooms</Link>
           <Link href="/ac-rooms-in-adirampattinam">AC Rooms</Link>
+          <Link href="/budget-hotel-in-adirampattinam">Budget Hotel</Link>
         </div>
       </div>
       <div className="footer-bottom">

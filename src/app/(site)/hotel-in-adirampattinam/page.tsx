@@ -324,7 +324,11 @@ export default function HotelInAdirampattinamPage() {
             <Link className="prose-link" href="/ac-rooms-in-adirampattinam">
               AC Rooms
             </Link>{" "}
-            page for air-conditioned accommodation, or explore our full{" "}
+            page for air-conditioned accommodation, our{" "}
+            <Link className="prose-link" href="/budget-hotel-in-adirampattinam">
+              Budget Hotel
+            </Link>{" "}
+            page for great-value stays, or explore our full{" "}
             <Link className="prose-link" href="/rooms">
               range of room types
             </Link>{" "}
