@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Image from "next/image";
 
 export function ProseSection({
@@ -12,7 +13,7 @@ export function ProseSection({
 }: {
   eyebrow?: string;
   title: string;
-  paragraphs: string[];
+  paragraphs: ReactNode[];
   alt?: boolean;
   id?: string;
   image?: string;
@@ -26,8 +27,8 @@ export function ProseSection({
         {title}
       </h2>
       <div style={{ maxWidth: image ? "none" : "760px", display: "flex", flexDirection: "column", gap: "18px" }}>
-        {paragraphs.map((paragraph) => (
-          <p key={paragraph} style={{ color: "var(--text-dim)", fontSize: "1.02rem" }}>
+        {paragraphs.map((paragraph, index) => (
+          <p key={index} style={{ color: "var(--text-dim)", fontSize: "1.02rem" }}>
             {paragraph}
           </p>
         ))}
