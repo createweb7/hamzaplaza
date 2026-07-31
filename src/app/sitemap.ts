@@ -10,6 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/rooms-in-adirampattinam",
     "/hotel-in-adirampattinam",
     "/lodge-in-adirampattinam",
+    "/family-rooms-in-adirampattinam",
   ];
 
   return routes.map((route) => ({

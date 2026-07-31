@@ -268,11 +268,15 @@ export default function RoomsInAdirampattinamPage() {
             <Link className="prose-link" href="/hotel-in-adirampattinam">
               Adirampattinam Hotel
             </Link>{" "}
-            page for our full range of hospitality, or our{" "}
+            page for our full range of hospitality, our{" "}
             <Link className="prose-link" href="/lodge-in-adirampattinam">
               Adirampattinam Lodge
             </Link>{" "}
-            page for budget-friendly options.
+            page for budget-friendly options, or our{" "}
+            <Link className="prose-link" href="/family-rooms-in-adirampattinam">
+              Family Rooms
+            </Link>{" "}
+            page if you're travelling with relatives.
           </>,
         ]}
         image="/assets/hero-frontage-day.jpg"
