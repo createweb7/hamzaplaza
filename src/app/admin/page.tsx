@@ -1,17 +1,20 @@
 import Link from "next/link";
-import { BookingsChart } from "@/components/admin/BookingsChart";
 import { createClient } from "@/lib/supabase/server";
-import { addMonths, istDateKey, istMonthKey, monthBoundsIst } from "@/lib/dates";
+import { addMonths, istMonthKey, monthBoundsIst } from "@/lib/dates";
 
 function monthLabel(monthKey: string) {
   const [year, month] = monthKey.split("-").map(Number);
   return new Date(Date.UTC(year, month - 1, 1)).toLocaleString("en-IN", { month: "long", year: "numeric", timeZone: "UTC" });
 }
 
-type BookingRow = { id: string; check_in_at: string; invoices: { grand_total: number }[] | null };
+type BookingRow = { id: string; check_in_at: string; invoices: { grand_total: number; balance_due: number }[] | null };
 
 function revenueOf(row: BookingRow) {
   return (row.invoices ?? []).reduce((sum, inv) => sum + Number(inv.grand_total), 0);
+}
+
+function balanceOf(row: BookingRow) {
+  return (row.invoices ?? []).reduce((sum, inv) => sum + Number(inv.balance_due), 0);
 }
 
 const currency = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
@@ -79,7 +82,7 @@ export default async function AdminDashboardPage({
   const { start: selectedMonthStart, end: selectedMonthEnd } = monthBoundsIst(selectedMonthKey);
   const { data: selectedMonthData } = await supabase
     .from("bookings")
-    .select("id, check_in_at, invoices(grand_total)")
+    .select("id, check_in_at, invoices(grand_total, balance_due)")
     .gte("check_in_at", selectedMonthStart)
     .lt("check_in_at", selectedMonthEnd)
     .not("status", "in", "(cancelled,no_show)")
@@ -87,18 +90,7 @@ export default async function AdminDashboardPage({
 
   const selectedMonthBookings = (selectedMonthData ?? []) as BookingRow[];
   const monthRevenue = selectedMonthBookings.reduce((sum, b) => sum + revenueOf(b), 0);
-
-  const dailyMap = new Map<string, { bookings: number; revenue: number }>();
-  for (const b of selectedMonthBookings) {
-    const key = istDateKey(b.check_in_at);
-    const entry = dailyMap.get(key) ?? { bookings: 0, revenue: 0 };
-    entry.bookings += 1;
-    entry.revenue += revenueOf(b);
-    dailyMap.set(key, entry);
-  }
-  const dailySeries = [...dailyMap.entries()]
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([date, v]) => ({ date: date.slice(8), bookings: v.bookings, revenue: v.revenue }));
+  const monthBalance = selectedMonthBookings.reduce((sum, b) => sum + balanceOf(b), 0);
 
   const prevMonthKey = addMonths(selectedMonthKey, -1);
   const nextMonthKey = addMonths(selectedMonthKey, 1);
@@ -113,7 +105,7 @@ export default async function AdminDashboardPage({
   }
   const monthlyRows = [...monthlyMap.entries()]
     .sort(([a], [b]) => b.localeCompare(a))
-    .map(([month, v]) => ({ month, ...v, avg: v.bookings ? v.revenue / v.bookings : 0 }));
+    .map(([month, v]) => ({ month, ...v }));
 
   return (
     <div>
@@ -134,7 +126,7 @@ export default async function AdminDashboardPage({
 
       <section style={{ marginTop: "2rem" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.75rem" }}>
-          <h3 style={{ margin: 0 }}>{monthLabel(selectedMonthKey)} — daily bookings &amp; revenue</h3>
+          <h3 style={{ margin: 0 }}>{monthLabel(selectedMonthKey)}</h3>
           <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
             <Link href={`/admin?month=${prevMonthKey}`} className="btn btn-ghost">
               &larr; {monthLabel(prevMonthKey)}
@@ -151,11 +143,20 @@ export default async function AdminDashboardPage({
             </Link>
           </div>
         </div>
-        {dailySeries.length > 0 ? (
-          <BookingsChart data={dailySeries} />
-        ) : (
-          <p style={{ color: "var(--text-faint)" }}>No bookings that month.</p>
-        )}
+        <div style={{ display: "flex", gap: "1rem", marginTop: "1.25rem", flexWrap: "wrap" }}>
+          <div style={{ flex: "1 1 240px", border: "1px solid var(--border)", borderRadius: "12px", padding: "1.25rem 1.5rem", background: "var(--surface)" }}>
+            <div style={{ color: "var(--text-faint)", fontSize: "0.85rem" }}>Total revenue</div>
+            <div style={{ fontSize: "2rem", fontWeight: 700, marginTop: "0.3rem" }}>{currency.format(monthRevenue)}</div>
+            <div style={{ color: "var(--text-dim)", fontSize: "0.85rem", marginTop: "0.3rem" }}>{selectedMonthBookings.length} bookings</div>
+          </div>
+          <div style={{ flex: "1 1 240px", border: "1px solid var(--border)", borderRadius: "12px", padding: "1.25rem 1.5rem", background: "var(--surface)" }}>
+            <div style={{ color: "var(--text-faint)", fontSize: "0.85rem" }}>Balance due</div>
+            <div style={{ fontSize: "2rem", fontWeight: 700, marginTop: "0.3rem" }}>{currency.format(monthBalance)}</div>
+            <div style={{ color: "var(--text-dim)", fontSize: "0.85rem", marginTop: "0.3rem" }}>
+              {monthBalance > 0 ? "still pending" : "fully settled"}
+            </div>
+          </div>
+        </div>
       </section>
 
       <section style={{ marginTop: "2rem" }}>
@@ -167,7 +168,6 @@ export default async function AdminDashboardPage({
               <th style={{ padding: "0.5rem" }}>Month</th>
               <th style={{ padding: "0.5rem" }}>Bookings</th>
               <th style={{ padding: "0.5rem" }}>Revenue</th>
-              <th style={{ padding: "0.5rem" }}>Avg / Booking</th>
             </tr>
           </thead>
           <tbody>
@@ -178,12 +178,11 @@ export default async function AdminDashboardPage({
                 </td>
                 <td style={{ padding: "0.5rem" }}>{row.bookings}</td>
                 <td style={{ padding: "0.5rem" }}>{currency.format(row.revenue)}</td>
-                <td style={{ padding: "0.5rem" }}>{currency.format(row.avg)}</td>
               </tr>
             ))}
             {monthlyRows.length === 0 && (
               <tr>
-                <td colSpan={4} style={{ padding: "1rem", color: "var(--text-faint)" }}>
+                <td colSpan={3} style={{ padding: "1rem", color: "var(--text-faint)" }}>
                   No bookings in the last 6 months.
                 </td>
               </tr>
