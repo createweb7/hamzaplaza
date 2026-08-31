@@ -23,7 +23,7 @@ export function Pagination({
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginTop: "1rem" }}>
       {page > 1 ? (
-        <Link href={hrefFor(page - 1)}>&larr; Prev</Link>
+        <Link href={hrefFor(page - 1)} className="admin-link">&larr; Prev</Link>
       ) : (
         <span style={{ color: "var(--text-faint)" }}>&larr; Prev</span>
       )}
@@ -31,7 +31,7 @@ export function Pagination({
         Page {page} of {totalPages}
       </span>
       {page < totalPages ? (
-        <Link href={hrefFor(page + 1)}>Next &rarr;</Link>
+        <Link href={hrefFor(page + 1)} className="admin-link">Next &rarr;</Link>
       ) : (
         <span style={{ color: "var(--text-faint)" }}>Next &rarr;</span>
       )}

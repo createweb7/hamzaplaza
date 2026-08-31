@@ -174,7 +174,7 @@ export default async function AdminDashboardPage({
             {monthlyRows.map((row) => (
               <tr key={row.month} style={{ borderBottom: "1px solid var(--border)" }}>
                 <td style={{ padding: "0.5rem" }}>
-                  <Link href={`/admin?month=${row.month}`}>{monthLabel(row.month)}</Link>
+                  <Link href={`/admin?month=${row.month}`} className="admin-link">{monthLabel(row.month)}</Link>
                 </td>
                 <td style={{ padding: "0.5rem" }}>{row.bookings}</td>
                 <td style={{ padding: "0.5rem" }}>{currency.format(row.revenue)}</td>
@@ -209,7 +209,7 @@ export default async function AdminDashboardPage({
             {upcoming?.map((booking) => (
               <tr key={booking.id} style={{ borderBottom: "1px solid var(--border)" }}>
                 <td style={{ padding: "0.5rem" }}>
-                  <Link href={`/admin/bookings/${booking.id}`}>{booking.booking_reference}</Link>
+                  <Link href={`/admin/bookings/${booking.id}`} className="admin-link">{booking.booking_reference}</Link>
                 </td>
                 <td style={{ padding: "0.5rem" }}>{booking.guests?.full_name}</td>
                 <td style={{ padding: "0.5rem" }}>{new Date(booking.check_in_at).toLocaleString("en-IN")}</td>

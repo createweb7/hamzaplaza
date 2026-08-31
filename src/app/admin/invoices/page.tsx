@@ -84,7 +84,7 @@ export default async function InvoicesListPage({
         <button type="submit" className="btn">
           Search
         </button>
-        {q && <Link href="/admin/invoices">Clear</Link>}
+        {q && <Link href="/admin/invoices" className="admin-link">Clear</Link>}
       </form>
 
       <div className="admin-table-wrap">
@@ -106,7 +106,7 @@ export default async function InvoicesListPage({
             <tr key={invoice.id} style={{ borderBottom: "1px solid var(--border)" }}>
               <td style={{ padding: "0.5rem" }}>{invoice.invoice_number}</td>
               <td style={{ padding: "0.5rem" }}>
-                <Link href={`/admin/bookings/${invoice.booking_id}`}>{invoice.bookings?.booking_reference}</Link>
+                <Link href={`/admin/bookings/${invoice.booking_id}`} className="admin-link">{invoice.bookings?.booking_reference}</Link>
               </td>
               <td style={{ padding: "0.5rem" }}>
                 {invoice.guests?.full_name}
@@ -117,7 +117,7 @@ export default async function InvoicesListPage({
               <td style={{ padding: "0.5rem" }}>{Number(invoice.balance_due) > 0 ? `₹${invoice.balance_due}` : "—"}</td>
               <td style={{ padding: "0.5rem" }}>{STATUS_LABELS[invoice.status] ?? invoice.status}</td>
               <td style={{ padding: "0.5rem" }}>
-                <a href={`/admin/bookings/${invoice.booking_id}/invoice`} target="_blank" rel="noopener noreferrer">
+                <a href={`/admin/bookings/${invoice.booking_id}/invoice`} target="_blank" rel="noopener noreferrer" className="admin-link">
                   Bill
                 </a>
               </td>

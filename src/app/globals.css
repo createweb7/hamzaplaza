@@ -957,6 +957,30 @@ h1, h2, h3, h4 {
   color: var(--text);
 }
 
+/* .btn-ghost is styled for the marketing header, which floats over hero
+   photography — its near-white "on-photo" palette disappears against the
+   admin panel's plain background, so give it real contrast here instead. */
+.admin-shell .btn-ghost {
+  color: var(--text-dim);
+  border-color: var(--border);
+}
+.admin-shell .btn-ghost:hover {
+  color: var(--gold-light);
+  border-color: var(--gold);
+}
+
+/* Plain <Link>s inherit `a { color: inherit; text-decoration: none; }` from
+   the marketing site, so they render as invisible plain text in the admin
+   panel — give them a real underline/color so they read as clickable. */
+.admin-link {
+  color: var(--gold-light);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.admin-link:hover {
+  color: var(--gold);
+}
+
 .admin-sidebar {
   width: 220px;
   flex-shrink: 0;

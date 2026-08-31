@@ -77,7 +77,7 @@ export default async function BookingsListPage({
         <button type="submit" className="btn">
           Search
         </button>
-        {q && <Link href="/admin/bookings">Clear</Link>}
+        {q && <Link href="/admin/bookings" className="admin-link">Clear</Link>}
       </form>
 
       <div className="admin-table-wrap">
@@ -101,7 +101,7 @@ export default async function BookingsListPage({
             return (
               <tr key={booking.id} style={{ borderBottom: "1px solid var(--border)" }}>
                 <td style={{ padding: "0.5rem" }}>
-                  <Link href={`/admin/bookings/${booking.id}`}>{booking.booking_reference}</Link>
+                  <Link href={`/admin/bookings/${booking.id}`} className="admin-link">{booking.booking_reference}</Link>
                 </td>
                 <td style={{ padding: "0.5rem" }}>
                   {booking.guests?.full_name}
@@ -129,7 +129,7 @@ export default async function BookingsListPage({
                 </td>
                 <td style={{ padding: "0.5rem" }}>
                   {invoice && (
-                    <a href={`/admin/bookings/${booking.id}/invoice`} target="_blank" rel="noopener noreferrer">
+                    <a href={`/admin/bookings/${booking.id}/invoice`} target="_blank" rel="noopener noreferrer" className="admin-link">
                       Bill
                     </a>
                   )}
