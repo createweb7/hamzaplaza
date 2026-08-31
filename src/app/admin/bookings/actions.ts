@@ -262,6 +262,88 @@ export async function recordPayment(bookingId: string, invoiceId: string, formDa
   revalidatePath(`/admin/bookings/${bookingId}`);
 }
 
+export async function updateBookingStay(bookingId: string, formData: FormData) {
+  const checkInAt = String(formData.get("check_in_at") ?? "");
+  const checkOutAt = String(formData.get("check_out_at") ?? "");
+  const totalAmount = Number(formData.get("total_amount") ?? 0);
+
+  if (!checkInAt || !checkOutAt) {
+    throw new Error("Check-in and check-out are required.");
+  }
+  if (!totalAmount || totalAmount <= 0) {
+    throw new Error("Total amount is required.");
+  }
+
+  const checkInIso = toIstIso(checkInAt);
+  const checkOutIso = toIstIso(checkOutAt);
+
+  const supabase = await createClient();
+
+  const { data: currentRooms } = await supabase.from("booking_rooms").select("room_id").eq("booking_id", bookingId);
+  const roomIds = (currentRooms ?? []).map((r) => r.room_id);
+
+  if (roomIds.length > 0) {
+    const { data: otherRoomBookings } = await supabase
+      .from("booking_rooms")
+      .select("room_id, bookings(id, check_in_at, check_out_at, status, booking_reference)")
+      .in("room_id", roomIds);
+
+    const checkInMs = new Date(checkInIso).getTime();
+    const checkOutMs = new Date(checkOutIso).getTime();
+
+    const conflicts = (otherRoomBookings ?? []).filter((row) => {
+      const b = row.bookings;
+      if (!b || b.id === bookingId || b.status === "cancelled" || b.status === "no_show") return false;
+      const existingIn = new Date(b.check_in_at).getTime();
+      const existingOut = new Date(b.check_out_at).getTime();
+      return existingIn < checkOutMs && existingOut > checkInMs;
+    });
+
+    if (conflicts.length > 0) {
+      throw new Error(
+        `Room already booked for that period (conflicts with ${conflicts
+          .map((c) => c.bookings?.booking_reference)
+          .join(", ")}).`,
+      );
+    }
+  }
+
+  const { data: booking, error: bookingFetchError } = await supabase
+    .from("bookings")
+    .select("notes")
+    .eq("id", bookingId)
+    .single();
+  if (bookingFetchError) throw new Error(bookingFetchError.message);
+
+  const editNote = `Stay edited on ${new Date().toLocaleDateString("en-IN")}: check-in/out updated, total set to ₹${totalAmount}.`;
+
+  const { error: updateError } = await supabase
+    .from("bookings")
+    .update({
+      check_in_at: checkInIso,
+      check_out_at: checkOutIso,
+      notes: booking.notes ? `${booking.notes} ${editNote}` : editNote,
+    })
+    .eq("id", bookingId);
+  if (updateError) throw new Error(updateError.message);
+
+  const { data: invoice } = await supabase.from("invoices").select("id, amount_paid").eq("booking_id", bookingId).maybeSingle();
+  if (invoice) {
+    const amountPaid = Number(invoice.amount_paid);
+    const balanceDue = totalAmount - amountPaid;
+    const status = balanceDue <= 0 ? "paid" : amountPaid > 0 ? "partially_paid" : "issued";
+
+    const { error: invoiceError } = await supabase
+      .from("invoices")
+      .update({ subtotal: totalAmount, grand_total: totalAmount, balance_due: balanceDue, status })
+      .eq("id", invoice.id);
+    if (invoiceError) throw new Error(invoiceError.message);
+  }
+
+  revalidatePath("/admin/bookings");
+  revalidatePath(`/admin/bookings/${bookingId}`);
+}
+
 export async function setBookingStatus(
   bookingId: string,
   status: "confirmed" | "checked_in" | "checked_out" | "cancelled" | "no_show",

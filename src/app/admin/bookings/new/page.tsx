@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { createBooking } from "../actions";
+import { StayPaymentFields } from "./StayPaymentFields";
 
 export default async function NewBookingPage() {
   const supabase = await createClient();
@@ -58,29 +59,7 @@ export default async function NewBookingPage() {
           </p>
         </fieldset>
 
-        <fieldset style={{ display: "flex", flexDirection: "column", gap: "0.75rem", border: "1px solid var(--border)", borderRadius: "10px", padding: "1rem" }}>
-          <legend>Stay</legend>
-          <label style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
-            Check-in
-            <input name="check_in_at" type="datetime-local" required style={{ padding: "0.5rem" }} />
-          </label>
-          <label style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
-            Check-out
-            <input name="check_out_at" type="datetime-local" required style={{ padding: "0.5rem" }} />
-          </label>
-          <label style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
-            Number of guests
-            <input name="num_guests" type="number" min={1} style={{ padding: "0.5rem" }} />
-          </label>
-          <label style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
-            Source
-            <select name="source" style={{ padding: "0.5rem" }}>
-              <option value="phone">Phone</option>
-              <option value="whatsapp">WhatsApp</option>
-              <option value="walk_in">Walk-in</option>
-            </select>
-          </label>
-        </fieldset>
+        <StayPaymentFields />
 
         <fieldset style={{ display: "flex", flexDirection: "column", gap: "0.5rem", border: "1px solid var(--border)", borderRadius: "10px", padding: "1rem" }}>
           <legend>Rooms</legend>
@@ -95,33 +74,6 @@ export default async function NewBookingPage() {
               No active rooms yet — add some in Rooms first.
             </p>
           )}
-        </fieldset>
-
-        <fieldset style={{ display: "flex", flexDirection: "column", gap: "0.75rem", border: "1px solid var(--border)", borderRadius: "10px", padding: "1rem" }}>
-          <legend>Payment</legend>
-          <label style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
-            Total amount (₹)
-            <input name="total_amount" type="number" min={0} step="0.01" required style={{ padding: "0.5rem" }} />
-          </label>
-          <label style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
-            Advance paid now (₹, optional)
-            <input name="advance_amount" type="number" min={0} step="0.01" style={{ padding: "0.5rem" }} />
-          </label>
-          <label style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
-            Payment type
-            <input name="payment_type" list="payment-types" placeholder="e.g. GPay, Cash" style={{ padding: "0.5rem" }} />
-            <datalist id="payment-types">
-              <option value="GPay" />
-              <option value="Cash" />
-              <option value="Bank Transfer" />
-              <option value="Card" />
-              <option value="Mixed" />
-            </datalist>
-          </label>
-          <p style={{ fontSize: "0.8rem", color: "var(--text-faint)", margin: 0 }}>
-            Leave advance blank/0 if nothing has been collected yet — you can record payments later
-            from the booking page.
-          </p>
         </fieldset>
 
         <label style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>

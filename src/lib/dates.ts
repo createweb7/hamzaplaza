@@ -34,6 +34,22 @@ export function istNowDateKey(): string {
   return istDateKey(new Date().toISOString());
 }
 
+// IST wall-clock value formatted for a <input type="datetime-local">, e.g.
+// "2026-08-22T21:30" — for pre-filling an edit form from a stored instant.
+export function istDateTimeLocal(iso: string) {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: IST_TZ,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).formatToParts(new Date(iso));
+  const map = Object.fromEntries(parts.map((p) => [p.type, p.value]));
+  return `${map.year}-${map.month}-${map.day}T${map.hour}:${map.minute}`;
+}
+
 // Adds `months` calendar months to a "YYYY-MM" month key.
 export function addMonths(monthKey: string, months: number): string {
   const [y, m] = monthKey.split("-").map(Number);

@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { istDateTimeLocal } from "@/lib/dates";
 import { recordPayment, setBookingStatus } from "../actions";
+import { EditStayForm } from "./EditStayForm";
 
 const INVOICE_STATUS_LABELS: Record<string, string> = {
   draft: "Draft",
@@ -112,6 +114,15 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
         <p>Check-out: {new Date(booking.check_out_at).toLocaleString("en-IN")}</p>
         {booking.num_guests && <p>Guests: {booking.num_guests}</p>}
         {booking.source && <p>Source: {booking.source}</p>}
+        {booking.status !== "cancelled" && booking.status !== "no_show" && (
+          <EditStayForm
+            bookingId={booking.id}
+            initialCheckIn={istDateTimeLocal(booking.check_in_at)}
+            initialCheckOut={istDateTimeLocal(booking.check_out_at)}
+            initialTotal={Number(invoice?.grand_total ?? 0)}
+            amountPaid={Number(invoice?.amount_paid ?? 0)}
+          />
+        )}
       </section>
 
       <section>
