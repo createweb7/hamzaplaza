@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
 
 const NAV_ITEMS = [
   { href: "/admin", label: "Dashboard", available: true },
@@ -78,6 +79,7 @@ export function AdminChrome({
           </button>
           <strong>Admin</strong>
           <div className="admin-topbar-right">
+            <ThemeToggle />
             <span className="admin-user-label">{userLabel}</span>
             {signOutButton}
           </div>

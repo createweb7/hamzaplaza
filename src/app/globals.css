@@ -968,6 +968,15 @@ h1, h2, h3, h4 {
   color: var(--gold-light);
   border-color: var(--gold);
 }
+.admin-shell .theme-toggle {
+  color: var(--text-dim);
+  border-color: var(--border);
+}
+.admin-shell .theme-toggle:hover {
+  color: var(--gold-light);
+  border-color: var(--gold);
+  background: rgba(212, 175, 55, 0.08);
+}
 
 /* Plain <Link>s inherit `a { color: inherit; text-decoration: none; }` from
    the marketing site, so they render as invisible plain text in the admin
