@@ -262,6 +262,46 @@ export async function recordPayment(bookingId: string, invoiceId: string, formDa
   revalidatePath(`/admin/bookings/${bookingId}`);
 }
 
+export async function deletePayment(bookingId: string, invoiceId: string, paymentId: string) {
+  const supabase = await createClient();
+
+  const { data: payment, error: paymentFetchError } = await supabase
+    .from("payments")
+    .select("amount")
+    .eq("id", paymentId)
+    .single();
+
+  if (paymentFetchError) throw new Error(paymentFetchError.message);
+
+  const { data: invoice, error: invoiceFetchError } = await supabase
+    .from("invoices")
+    .select("amount_paid, grand_total")
+    .eq("id", invoiceId)
+    .single();
+
+  if (invoiceFetchError) throw new Error(invoiceFetchError.message);
+
+  const { error: deleteError } = await supabase.from("payments").delete().eq("id", paymentId);
+  if (deleteError) throw new Error(deleteError.message);
+
+  const newAmountPaid = Number(invoice.amount_paid) - Number(payment.amount);
+  const newBalanceDue = Number(invoice.grand_total) - newAmountPaid;
+
+  const { error: updateError } = await supabase
+    .from("invoices")
+    .update({
+      amount_paid: newAmountPaid,
+      balance_due: newBalanceDue,
+      status: newBalanceDue <= 0 ? (newAmountPaid > 0 ? "paid" : "issued") : newAmountPaid > 0 ? "partially_paid" : "issued",
+    })
+    .eq("id", invoiceId);
+
+  if (updateError) throw new Error(updateError.message);
+
+  revalidatePath("/admin/bookings");
+  revalidatePath(`/admin/bookings/${bookingId}`);
+}
+
 export async function updateBookingStay(bookingId: string, formData: FormData) {
   const checkInAt = String(formData.get("check_in_at") ?? "");
   const checkOutAt = String(formData.get("check_out_at") ?? "");

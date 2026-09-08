@@ -125,7 +125,13 @@ export default async function BookingsListPage({
                   )}
                 </td>
                 <td style={{ padding: "0.5rem" }}>
-                  {invoice ? (Number(invoice.balance_due) > 0 ? `₹${invoice.balance_due}` : "Paid") : "—"}
+                  {invoice
+                    ? Number(invoice.balance_due) > 0
+                      ? `₹${invoice.balance_due}`
+                      : Number(invoice.balance_due) < 0
+                        ? <span style={{ color: "#b45309" }}>Paid (+₹{Math.abs(Number(invoice.balance_due))} overpaid)</span>
+                        : "Paid"
+                    : "—"}
                 </td>
                 <td style={{ padding: "0.5rem" }}>
                   {invoice && (

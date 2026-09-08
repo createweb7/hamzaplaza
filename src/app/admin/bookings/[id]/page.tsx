@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { istDateTimeLocal } from "@/lib/dates";
-import { recordPayment, setBookingStatus } from "../actions";
+import { deletePayment, recordPayment, setBookingStatus } from "../actions";
 import { EditStayForm } from "./EditStayForm";
+import { RecordPaymentButton } from "./RecordPaymentButton";
 
 const INVOICE_STATUS_LABELS: Record<string, string> = {
   draft: "Draft",
@@ -57,7 +58,7 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
 
   const { data: invoice } = await supabase
     .from("invoices")
-    .select("id, status, grand_total, amount_paid, balance_due, payments(amount, payment_method, paid_at)")
+    .select("id, status, grand_total, amount_paid, balance_due, payments(id, amount, payment_method, paid_at)")
     .eq("booking_id", id)
     .maybeSingle();
 
@@ -149,10 +150,15 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
           </a>
           {invoice.payments && invoice.payments.length > 0 && (
             <ul>
-              {invoice.payments.map((p, i) => (
-                <li key={i}>
+              {invoice.payments.map((p) => (
+                <li key={p.id} style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
                   ₹{p.amount} via {p.payment_method ?? "unspecified"} on{" "}
                   {new Date(p.paid_at).toLocaleDateString("en-IN")}
+                  <form action={deletePayment.bind(null, booking.id, invoice.id, p.id)}>
+                    <button type="submit" className="admin-link" style={{ background: "none", border: "none", cursor: "pointer", padding: 0, font: "inherit" }}>
+                      Remove
+                    </button>
+                  </form>
                 </li>
               ))}
             </ul>
@@ -177,9 +183,7 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
                   <option value="Mixed" />
                 </datalist>
               </label>
-              <button type="submit" className="btn btn-solid">
-                Record Payment
-              </button>
+              <RecordPaymentButton />
             </form>
           )}
         </section>
