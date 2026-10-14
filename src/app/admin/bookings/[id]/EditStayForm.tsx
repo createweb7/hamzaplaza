@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { updateBookingStay } from "../actions";
+import { Field, FormMessage, invalidProps, useValidatedForm } from "../form-ui";
+import { validateStayForm } from "../validation";
 
 function nightsBetween(checkIn: string, checkOut: string) {
   if (!checkIn || !checkOut) return 0;
@@ -34,12 +36,20 @@ export function EditStayForm({
   const initialNights = useMemo(() => nightsBetween(initialCheckIn, initialCheckOut), [initialCheckIn, initialCheckOut]);
   const [roomRate, setRoomRate] = useState(initialNights > 0 && initialTotal > 0 ? String(Math.round(initialTotal / initialNights)) : "");
 
-  useEffect(() => {
-    if (totalTouched || !roomRate || nights === 0) return;
-    setTotal(String(Number(roomRate) * nights));
-  }, [roomRate, nights, totalTouched]);
+  // Recalculate only in response to the user changing the rate or dates, so
+  // an existing total isn't overwritten by the (rounded) derived rate on load.
+  function recalcTotal(nextRate: string, nextNights: number) {
+    if (totalTouched || !nextRate || nextNights === 0) return;
+    setTotal(String(Number(nextRate) * nextNights));
+  }
 
   const balance = Math.max(0, Number(total || 0) - amountPaid);
+
+  const { errors, message, pending, onSubmit, onChange } = useValidatedForm(
+    updateBookingStay.bind(null, bookingId),
+    validateStayForm,
+    () => setOpen(false),
+  );
 
   if (!open) {
     return (
@@ -51,59 +61,75 @@ export function EditStayForm({
 
   return (
     <form
-      action={updateBookingStay.bind(null, bookingId)}
+      noValidate
+      onSubmit={onSubmit}
+      onChange={onChange}
       style={{ display: "flex", flexDirection: "column", gap: "0.75rem", border: "1px solid var(--border)", borderRadius: "10px", padding: "1rem", maxWidth: "360px" }}
     >
-      <label style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
-        Check-in
+      <Field label="Check-in" name="check_in_at" errors={errors}>
         <input
           name="check_in_at"
           type="datetime-local"
-          required
           value={checkIn}
-          onChange={(e) => setCheckIn(e.target.value)}
+          onChange={(e) => {
+            setCheckIn(e.target.value);
+            recalcTotal(roomRate, nightsBetween(e.target.value, checkOut));
+          }}
           style={{ padding: "0.5rem" }}
+          {...invalidProps("check_in_at", errors)}
         />
-      </label>
-      <label style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
-        Check-out
+      </Field>
+      <Field label="Check-out" name="check_out_at" errors={errors}>
         <input
           name="check_out_at"
           type="datetime-local"
-          required
           value={checkOut}
-          onChange={(e) => setCheckOut(e.target.value)}
+          onChange={(e) => {
+            setCheckOut(e.target.value);
+            recalcTotal(roomRate, nightsBetween(checkIn, e.target.value));
+          }}
           style={{ padding: "0.5rem" }}
+          {...invalidProps("check_out_at", errors)}
         />
-      </label>
+      </Field>
       {nights > 0 && <p style={{ margin: 0, color: "var(--text-dim)", fontSize: "0.85rem" }}>{nights} night(s)</p>}
       <label style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
         Room rate (₹ / night)
-        <input type="number" min={0} step="0.01" value={roomRate} onChange={(e) => setRoomRate(e.target.value)} style={{ padding: "0.5rem" }} />
+        <input
+          type="number"
+          min={0}
+          step="0.01"
+          value={roomRate}
+          onChange={(e) => {
+            setRoomRate(e.target.value);
+            recalcTotal(e.target.value, nights);
+          }}
+          style={{ padding: "0.5rem" }}
+        />
       </label>
-      <label style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
-        Total amount (₹)
+      <Field label="Total amount (₹)" name="total_amount" errors={errors}>
         <input
           name="total_amount"
           type="number"
           min={0}
           step="0.01"
-          required
           value={total}
           onChange={(e) => {
             setTotalTouched(true);
             setTotal(e.target.value);
           }}
           style={{ padding: "0.5rem" }}
+          {...invalidProps("total_amount", errors)}
         />
-      </label>
+      </Field>
       <div style={{ borderTop: "1px solid var(--border)", paddingTop: "0.6rem", display: "flex", justifyContent: "space-between" }}>
         <span style={{ color: "var(--text-dim)" }}>New balance due (₹{amountPaid} already paid)</span>
         <strong>{currency.format(balance)}</strong>
       </div>
+      <FormMessage message={message} />
       <div style={{ display: "flex", gap: "0.5rem" }}>
-        <button type="submit" className="btn btn-solid">
-          Save changes
+        <button type="submit" className="btn btn-solid" disabled={pending} aria-busy={pending}>
+          {pending ? "Saving…" : "Save changes"}
         </button>
         <button type="button" className="btn btn-ghost" onClick={() => setOpen(false)}>
           Cancel

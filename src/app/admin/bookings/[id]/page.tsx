@@ -1,9 +1,11 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { istDateTimeLocal } from "@/lib/dates";
-import { deletePayment, recordPayment, setBookingStatus } from "../actions";
+import { deletePayment, setBookingStatus } from "../actions";
+import { DeleteBookingButton } from "../DeleteBookingButton";
 import { EditStayForm } from "./EditStayForm";
-import { RecordPaymentButton } from "./RecordPaymentButton";
+import { RecordPaymentForm } from "./RecordPaymentForm";
 
 const INVOICE_STATUS_LABELS: Record<string, string> = {
   draft: "Draft",
@@ -67,7 +69,15 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
   return (
     <div style={{ maxWidth: "640px", display: "flex", flexDirection: "column", gap: "1.5rem" }}>
       <div>
-        <h1>{booking.booking_reference}</h1>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.75rem", flexWrap: "wrap" }}>
+          <h1>{booking.booking_reference}</h1>
+          <div style={{ display: "flex", gap: "0.5rem", alignItems: "flex-start" }}>
+            <Link href={`/admin/bookings/${booking.id}/edit`} className="btn btn-ghost">
+              Edit Booking
+            </Link>
+            <DeleteBookingButton bookingId={booking.id} reference={booking.booking_reference} redirectTo="/admin/bookings" />
+          </div>
+        </div>
         <span
           style={{
             display: "inline-block",
@@ -164,27 +174,7 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
             </ul>
           )}
           {Number(invoice.balance_due) > 0 && (
-            <form
-              action={recordPayment.bind(null, booking.id, invoice.id)}
-              style={{ display: "flex", gap: "0.5rem", alignItems: "flex-end", flexWrap: "wrap", marginTop: "0.5rem" }}
-            >
-              <label style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
-                Amount (₹)
-                <input name="amount" type="number" min={0} step="0.01" required style={{ padding: "0.5rem" }} />
-              </label>
-              <label style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
-                Payment type
-                <input name="payment_type" list="payment-types" style={{ padding: "0.5rem" }} />
-                <datalist id="payment-types">
-                  <option value="GPay" />
-                  <option value="Cash" />
-                  <option value="Bank Transfer" />
-                  <option value="Card" />
-                  <option value="Mixed" />
-                </datalist>
-              </label>
-              <RecordPaymentButton />
-            </form>
+            <RecordPaymentForm bookingId={booking.id} invoiceId={invoice.id} />
           )}
         </section>
       )}

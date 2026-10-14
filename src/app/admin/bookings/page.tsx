@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Pagination } from "@/components/admin/Pagination";
 import { createClient } from "@/lib/supabase/server";
+import { DeleteBookingButton } from "./DeleteBookingButton";
 
 const STATUS_LABELS: Record<string, string> = {
   confirmed: "Confirmed",
@@ -81,7 +82,7 @@ export default async function BookingsListPage({
       </form>
 
       <div className="admin-table-wrap">
-      <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "760px" }}>
+      <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "860px" }}>
         <thead>
           <tr style={{ textAlign: "left", borderBottom: "1px solid var(--border)" }}>
             <th style={{ padding: "0.5rem" }}>Reference</th>
@@ -134,11 +135,17 @@ export default async function BookingsListPage({
                     : "—"}
                 </td>
                 <td style={{ padding: "0.5rem" }}>
-                  {invoice && (
-                    <a href={`/admin/bookings/${booking.id}/invoice`} target="_blank" rel="noopener noreferrer" className="admin-link">
-                      Bill
-                    </a>
-                  )}
+                  <div style={{ display: "flex", gap: "0.75rem", alignItems: "flex-start" }}>
+                    {invoice && (
+                      <a href={`/admin/bookings/${booking.id}/invoice`} target="_blank" rel="noopener noreferrer" className="admin-link">
+                        Bill
+                      </a>
+                    )}
+                    <Link href={`/admin/bookings/${booking.id}/edit`} className="admin-link">
+                      Edit
+                    </Link>
+                    <DeleteBookingButton bookingId={booking.id} reference={booking.booking_reference} variant="link" />
+                  </div>
                 </td>
               </tr>
             );

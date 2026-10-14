@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import { Field, invalidProps } from "../form-ui";
+import type { FieldErrors } from "../validation";
 
 function nightsBetween(checkIn: string, checkOut: string) {
   if (!checkIn || !checkOut) return 0;
@@ -10,57 +12,93 @@ function nightsBetween(checkIn: string, checkOut: string) {
 
 const currency = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
 
-export function StayPaymentFields() {
-  const [checkIn, setCheckIn] = useState("");
-  const [checkOut, setCheckOut] = useState("");
-  const [roomRate, setRoomRate] = useState("");
-  const [total, setTotal] = useState("");
+export type StayInitialValues = {
+  checkIn: string;
+  checkOut: string;
+  total: number;
+  numGuests: number | null;
+  source: string | null;
+};
+
+// When `amountPaid` is given the form is editing an existing booking: the
+// advance/payment fields are hidden (payments are managed on the booking
+// page) and the balance is computed against what's already been paid.
+export function StayPaymentFields({
+  errors,
+  initial,
+  amountPaid,
+}: {
+  errors: FieldErrors;
+  initial?: StayInitialValues;
+  amountPaid?: number;
+}) {
+  const isEdit = amountPaid !== undefined;
+  const [checkIn, setCheckIn] = useState(initial?.checkIn ?? "");
+  const [checkOut, setCheckOut] = useState(initial?.checkOut ?? "");
+  const initialNights = nightsBetween(initial?.checkIn ?? "", initial?.checkOut ?? "");
+  const [roomRate, setRoomRate] = useState(
+    initial && initialNights > 0 && initial.total > 0 ? String(Math.round(initial.total / initialNights)) : "",
+  );
+  const [total, setTotal] = useState(initial?.total ? String(initial.total) : "");
   const [totalTouched, setTotalTouched] = useState(false);
   const [advance, setAdvance] = useState("");
 
   const nights = useMemo(() => nightsBetween(checkIn, checkOut), [checkIn, checkOut]);
 
-  useEffect(() => {
-    if (totalTouched || !roomRate || nights === 0) return;
-    setTotal(String(Number(roomRate) * nights));
-  }, [roomRate, nights, totalTouched]);
+  // Recalculate only in response to the user changing the rate or dates, so
+  // an existing total isn't overwritten by the (rounded) derived rate on load.
+  function recalcTotal(nextRate: string, nextNights: number) {
+    if (totalTouched || !nextRate || nextNights === 0) return;
+    setTotal(String(Number(nextRate) * nextNights));
+  }
 
-  const balance = Math.max(0, Number(total || 0) - Number(advance || 0));
+  const balance = Math.max(0, Number(total || 0) - (isEdit ? amountPaid : Number(advance || 0)));
 
   return (
     <>
       <fieldset style={{ display: "flex", flexDirection: "column", gap: "0.75rem", border: "1px solid var(--border)", borderRadius: "10px", padding: "1rem" }}>
         <legend>Stay</legend>
-        <label style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
-          Check-in
+        <Field label="Check-in" name="check_in_at" errors={errors}>
           <input
             name="check_in_at"
             type="datetime-local"
-            required
             value={checkIn}
-            onChange={(e) => setCheckIn(e.target.value)}
+            onChange={(e) => {
+            setCheckIn(e.target.value);
+            recalcTotal(roomRate, nightsBetween(e.target.value, checkOut));
+          }}
             style={{ padding: "0.5rem" }}
+            {...invalidProps("check_in_at", errors)}
           />
-        </label>
-        <label style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
-          Check-out
+        </Field>
+        <Field label="Check-out" name="check_out_at" errors={errors}>
           <input
             name="check_out_at"
             type="datetime-local"
-            required
             value={checkOut}
-            onChange={(e) => setCheckOut(e.target.value)}
+            onChange={(e) => {
+            setCheckOut(e.target.value);
+            recalcTotal(roomRate, nightsBetween(checkIn, e.target.value));
+          }}
             style={{ padding: "0.5rem" }}
+            {...invalidProps("check_out_at", errors)}
           />
-        </label>
+        </Field>
         {nights > 0 && <p style={{ margin: 0, color: "var(--text-dim)", fontSize: "0.85rem" }}>{nights} night(s)</p>}
-        <label style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
-          Number of guests
-          <input name="num_guests" type="number" min={1} style={{ padding: "0.5rem" }} />
-        </label>
+        <Field label="Number of guests" name="num_guests" errors={errors}>
+          <input
+            name="num_guests"
+            type="number"
+            min={1}
+            step={1}
+            defaultValue={initial?.numGuests ?? ""}
+            style={{ padding: "0.5rem" }}
+            {...invalidProps("num_guests", errors)}
+          />
+        </Field>
         <label style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
           Source
-          <select name="source" style={{ padding: "0.5rem" }}>
+          <select name="source" defaultValue={initial?.source ?? "phone"} style={{ padding: "0.5rem" }}>
             <option value="phone">Phone</option>
             <option value="whatsapp">WhatsApp</option>
             <option value="walk_in">Walk-in</option>
@@ -77,59 +115,68 @@ export function StayPaymentFields() {
             min={0}
             step="0.01"
             value={roomRate}
-            onChange={(e) => setRoomRate(e.target.value)}
+            onChange={(e) => {
+            setRoomRate(e.target.value);
+            recalcTotal(e.target.value, nights);
+          }}
             style={{ padding: "0.5rem" }}
           />
         </label>
-        <label style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
-          Total amount (₹)
+        <Field label="Total amount (₹)" name="total_amount" errors={errors}>
           <input
             name="total_amount"
             type="number"
             min={0}
             step="0.01"
-            required
             value={total}
             onChange={(e) => {
               setTotalTouched(true);
               setTotal(e.target.value);
             }}
             style={{ padding: "0.5rem" }}
+            {...invalidProps("total_amount", errors)}
           />
-        </label>
+        </Field>
         <p style={{ fontSize: "0.8rem", color: "var(--text-faint)", margin: 0 }}>
           Auto-filled from room rate × nights — edit directly for extra charges, discounts, etc.
         </p>
-        <label style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
-          Advance given (₹, optional)
-          <input
-            name="advance_amount"
-            type="number"
-            min={0}
-            step="0.01"
-            value={advance}
-            onChange={(e) => setAdvance(e.target.value)}
-            style={{ padding: "0.5rem" }}
-          />
-        </label>
-        <label style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
-          Payment type
-          <input name="payment_type" list="payment-types" placeholder="e.g. GPay, Cash" style={{ padding: "0.5rem" }} />
-          <datalist id="payment-types">
-            <option value="GPay" />
-            <option value="Cash" />
-            <option value="Bank Transfer" />
-            <option value="Card" />
-            <option value="Mixed" />
-          </datalist>
-        </label>
+        {!isEdit && (
+          <>
+            <Field label="Advance given (₹, optional)" name="advance_amount" errors={errors}>
+              <input
+                name="advance_amount"
+                type="number"
+                min={0}
+                step="0.01"
+                value={advance}
+                onChange={(e) => setAdvance(e.target.value)}
+                style={{ padding: "0.5rem" }}
+                {...invalidProps("advance_amount", errors)}
+              />
+            </Field>
+            <label style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
+              Payment type
+              <input name="payment_type" list="payment-types" placeholder="e.g. GPay, Cash" style={{ padding: "0.5rem" }} />
+              <datalist id="payment-types">
+                <option value="GPay" />
+                <option value="Cash" />
+                <option value="Bank Transfer" />
+                <option value="Card" />
+                <option value="Mixed" />
+              </datalist>
+            </label>
+          </>
+        )}
         <div style={{ borderTop: "1px solid var(--border)", paddingTop: "0.6rem", display: "flex", justifyContent: "space-between" }}>
-          <span style={{ color: "var(--text-dim)" }}>Balance due</span>
+          <span style={{ color: "var(--text-dim)" }}>
+            {isEdit ? `Balance due (₹${amountPaid} already paid)` : "Balance due"}
+          </span>
           <strong>{currency.format(balance)}</strong>
         </div>
         <p style={{ fontSize: "0.8rem", color: "var(--text-faint)", margin: 0 }}>
-          Leave advance blank/0 if nothing has been collected yet — you can record payments later
-          from the booking page.
+          {isEdit
+            ? "Record or remove payments from the booking page."
+            : "Leave advance blank/0 if nothing has been collected yet — you can record payments later from the booking page."}
         </p>
       </fieldset>
     </>
